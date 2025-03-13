@@ -1,19 +1,5 @@
-export interface Property {
-  id: number;
-  name: string;
-  type: string;
-  values?: string[];
-}
-
-export interface PropertyValue {
-  property_id: number;
-  value: string;
-}
-
-export interface Product {
-  id: number;
-  property_values: PropertyValue[];
-}
+export type PropertyID = number;
+export type ProductID = number;
 
 export type OperatorID =
   | "equals"
@@ -23,6 +9,23 @@ export type OperatorID =
   | "none"
   | "in"
   | "contains";
+
+export interface Property {
+  id: PropertyID;
+  name: string;
+  type: string;
+  values?: string[];
+}
+
+export interface PropertyValue {
+  property_id: PropertyID;
+  value: string | number;
+}
+
+export interface Product {
+  id: ProductID;
+  property_values: PropertyValue[];
+}
 
 export interface Operator {
   id: OperatorID;
