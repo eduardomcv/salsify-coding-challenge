@@ -1,3 +1,7 @@
+/**
+ * These types are a representation of the provided datastore.js file.
+ */
+
 export type PropertyID = number;
 export type ProductID = number;
 
