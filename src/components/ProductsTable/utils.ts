@@ -3,20 +3,32 @@ import { PropertyID, OperatorID, Product } from "../../datastoreTypes";
 // The separator used when splitting the keywords to search
 const SEPARATOR = ", ";
 
+const PRODUCTS = window.datastore.getProducts();
+
 export interface ProductFilters {
-  propertyID: PropertyID;
-  operatorID: OperatorID;
+  propertyID: PropertyID | null;
+  operatorID: OperatorID | null;
   inputValue: string;
   enumeratedSelections: string[];
 }
 
-export function filterProducts(
-  products: Product[],
-  filters: ProductFilters,
-): Product[] {
+export function getProducts(filters: ProductFilters) {
   const { propertyID, operatorID, inputValue, enumeratedSelections } = filters;
 
-  return products.filter((product) => {
+  if (propertyID === null || operatorID === null) {
+    return PRODUCTS;
+  }
+
+  if (
+    operatorID !== "none" &&
+    operatorID !== "any" &&
+    !inputValue.length &&
+    !enumeratedSelections.length
+  ) {
+    return PRODUCTS;
+  }
+
+  return PRODUCTS.filter((product) => {
     const propertyToFilter = product.property_values.find(
       (property) => property.property_id === propertyID,
     );
@@ -33,7 +45,7 @@ export function filterProducts(
 
         // My assumption is that, for enumerable properties, the "equals" operator requires all selected
         // values to match the property's values exactly. Otherwise, it would function the same as the "Is any of" operator.
-        // However, our datastore doesn't seem to support multiple property values for now.
+        // However, the datastore doesn't seem to support multiple property values for now.
         // Still, I added the possibility to read comma separated keywords in property values.
         if (enumeratedSelections.length > 0) {
           const values = String(propertyToFilter.value).split(SEPARATOR);

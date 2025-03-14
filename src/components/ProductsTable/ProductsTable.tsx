@@ -1,9 +1,9 @@
 import { OperatorID, PropertyID } from "../../datastoreTypes";
 
-import { filterProducts } from "./utils";
+import { getProducts } from "./utils";
+
 import "./ProductsTable.css";
 
-const PRODUCTS = window.datastore.getProducts();
 const PROPERTIES = window.datastore.getProperties();
 
 const PROPERTY_ID_NAME_MAP = PROPERTIES.reduce(
@@ -32,17 +32,12 @@ export function ProductsTable(props: ProductsTableProps) {
     enumeratedSelections,
   } = props;
 
-  const shouldFilter =
-    selectedOperatorID !== null && selectedPropertyID !== null;
-
-  const productsList = shouldFilter
-    ? filterProducts(PRODUCTS, {
-        inputValue,
-        enumeratedSelections,
-        operatorID: selectedOperatorID,
-        propertyID: selectedPropertyID,
-      })
-    : PRODUCTS;
+  const productsList = getProducts({
+    enumeratedSelections,
+    inputValue,
+    operatorID: selectedOperatorID,
+    propertyID: selectedPropertyID,
+  });
 
   return (
     <table className="products-table">
