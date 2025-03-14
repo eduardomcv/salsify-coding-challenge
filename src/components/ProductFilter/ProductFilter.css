@@ -1,0 +1,26 @@
+.product-filter {
+	display: flex;
+	padding: 1rem;
+
+	select {
+		height: 1.5rem;
+		margin-right: 1rem;
+	}
+}
+
+.properties-listbox {
+	min-width: 8rem;
+	padding: .5rem;
+	border: 1px solid grey;
+	border-radius: 2px;
+	text-align: left;
+	cursor: default;
+
+	li:hover {
+		background-color: #c4dbff;
+	}
+
+	li.selected {
+		background-color: #639fff;
+	}
+}
