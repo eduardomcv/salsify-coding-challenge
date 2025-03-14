@@ -5,6 +5,7 @@
 
 .container {
 	border: 1px solid grey;
+	border-radius: 2px;
 
 	table {
 		min-width: 800px;
@@ -27,5 +28,15 @@
 	th,
 	td {
 		border-collapse: collapse;
+	}
+
+	tbody {
+		tr:nth-child(even) {
+			background-color: #f5f5f5;
+		}
+
+		tr:nth-child(odd) {
+			background-color: #ffffff;
+		}
 	}
 }
