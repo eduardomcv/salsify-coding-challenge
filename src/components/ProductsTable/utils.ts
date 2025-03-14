@@ -1,4 +1,4 @@
-import { PropertyID, OperatorID, Product } from "../../datastoreTypes";
+import { PropertyID, OperatorID } from "../../datastoreTypes";
 
 // The separator used when splitting the keywords to search
 const SEPARATOR = ", ";
