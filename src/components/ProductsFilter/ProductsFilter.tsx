@@ -33,6 +33,7 @@ export interface ProductFilterProps {
   onOperatorChange(newOperatorID: OperatorID): void;
   onInputChange(newInput: string | string[]): void;
   onEnumSelection(newInput: string | string[]): void;
+  onClear(): void;
 }
 
 export function ProductsFilter(props: ProductFilterProps) {
@@ -45,6 +46,7 @@ export function ProductsFilter(props: ProductFilterProps) {
     onOperatorChange,
     onInputChange,
     onEnumSelection,
+    onClear,
   } = props;
 
   const selectedProperty = PROPERTIES.find(
@@ -84,80 +86,87 @@ export function ProductsFilter(props: ProductFilterProps) {
   }
 
   return (
-    <div className="product-filter">
-      <select
-        name="properties"
-        value={selectedPropertyID ?? ""}
-        onChange={handlePropertyChange}
-      >
-        <option value="" disabled>
-          Select a property...
-        </option>
-        {PROPERTIES.map((property) => (
-          <option key={property.id} value={property.id}>
-            {property.name}
+    <div className="products-filter-container">
+      <div className="products-filter-inputs">
+        <select
+          name="properties"
+          value={selectedPropertyID ?? ""}
+          onChange={handlePropertyChange}
+        >
+          <option value="" disabled>
+            Select a property...
           </option>
-        ))}
-      </select>
-      <select
-        name="operators"
-        value={isAvailableOperator ? selectedOperatorID : ""}
-        onChange={handleOperatorChange}
-      >
-        <option value="" disabled>
-          Select an operator...
-        </option>
-        {availableOperators.map((operator) => (
-          <option key={operator} value={operator}>
-            {OPERATOR_TEXT_MAP[operator]}
+          {PROPERTIES.map((property) => (
+            <option key={property.id} value={property.id}>
+              {property.name}
+            </option>
+          ))}
+        </select>
+        <select
+          name="operators"
+          value={isAvailableOperator ? selectedOperatorID : ""}
+          onChange={handleOperatorChange}
+        >
+          <option value="" disabled>
+            Select an operator...
           </option>
-        ))}
-      </select>
-      {showInput && (
-        <>
-          {isEnumeratedProperty ? (
-            <ul className="properties-listbox" role="listbox">
-              {selectedProperty.values?.map((value) => {
-                const isSelected = enumeratedSelections.some(
-                  (val) => val === value,
-                );
+          {availableOperators.map((operator) => (
+            <option key={operator} value={operator}>
+              {OPERATOR_TEXT_MAP[operator]}
+            </option>
+          ))}
+        </select>
+        {showInput && (
+          <>
+            {isEnumeratedProperty ? (
+              <ul className="properties-listbox" role="listbox">
+                {selectedProperty.values?.map((value) => {
+                  const isSelected = enumeratedSelections.some(
+                    (val) => val === value,
+                  );
 
-                function handleItemSelection() {
-                  let newSelections: string[];
+                  function handleItemSelection() {
+                    let newSelections: string[];
 
-                  if (isSelected) {
-                    newSelections = enumeratedSelections.filter(
-                      (val) => val !== value,
-                    );
-                  } else {
-                    newSelections = [...enumeratedSelections, value];
+                    if (isSelected) {
+                      newSelections = enumeratedSelections.filter(
+                        (val) => val !== value,
+                      );
+                    } else {
+                      newSelections = [...enumeratedSelections, value];
+                    }
+
+                    onEnumSelection(newSelections);
                   }
 
-                  onEnumSelection(newSelections);
-                }
-
-                return (
-                  <li
-                    key={value}
-                    role="option"
-                    className={isSelected ? "selected" : undefined}
-                    onClick={handleItemSelection}
-                  >
-                    {value}
-                  </li>
-                );
-              })}
-            </ul>
-          ) : (
-            <input
-              type="text"
-              value={inputValue ?? ""}
-              onChange={handleInputChange}
-              placeholder="Filter value..."
-            />
-          )}
-        </>
-      )}
+                  return (
+                    <li
+                      key={value}
+                      role="option"
+                      className={isSelected ? "selected" : undefined}
+                      onClick={handleItemSelection}
+                    >
+                      {value}
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <input
+                type="text"
+                value={inputValue ?? ""}
+                onChange={handleInputChange}
+                placeholder="Filter value..."
+              />
+            )}
+          </>
+        )}
+      </div>
+      <div>
+        <button className="clear-button" onClick={onClear} type="button">
+          Clear
+        </button>
+      </div>
     </div>
   );
 }

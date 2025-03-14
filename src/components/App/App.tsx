@@ -35,6 +35,13 @@ export function App() {
     setEnumeratedSelections(newSelections);
   }
 
+  function handleClear() {
+    setSelectedPropertyID(null);
+    setSelectedOperatorID(null);
+    setInputValue("");
+    setEnumeratedSelections([]);
+  }
+
   return (
     <div className="container">
       <ProductsFilter
@@ -46,6 +53,7 @@ export function App() {
         onOperatorChange={handleOperatorChange}
         onInputChange={handleInputChange}
         onEnumSelection={handleEnumSelection}
+        onClear={handleClear}
       />
       <ProductsTable
         selectedPropertyID={selectedPropertyID}
