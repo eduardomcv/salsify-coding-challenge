@@ -10,12 +10,29 @@ export type OperatorID =
   | "in"
   | "contains";
 
-export interface Property {
+export type PropertyType = "string" | "number" | "enumerated";
+
+export interface StringProperty {
   id: PropertyID;
   name: string;
-  type: string;
-  values?: string[];
+  type: "string";
 }
+
+export interface NumberProperty {
+  id: PropertyID;
+  name: string;
+  type: "number";
+}
+
+// For now, only enumerated properties have possible "values"
+export interface EnumeratedProperty {
+  id: PropertyID;
+  name: string;
+  type: "enumerated";
+  values: string[];
+}
+
+export type Property = StringProperty | NumberProperty | EnumeratedProperty;
 
 export interface PropertyValue {
   property_id: PropertyID;
