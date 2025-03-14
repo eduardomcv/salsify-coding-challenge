@@ -2,7 +2,7 @@ import { ChangeEvent } from "react";
 
 import { OperatorID, PropertyID, PropertyType } from "../../datastoreTypes";
 
-import "./ProductFilter.css";
+import "./ProductsFilter.css";
 
 const PROPERTIES = window.datastore.getProperties();
 const OPERATORS = window.datastore.getOperators();
@@ -16,6 +16,8 @@ const OPERATOR_TEXT_MAP = OPERATORS.reduce(
   {} as Record<OperatorID, string>,
 );
 
+const ALL_OPERATORS = OPERATORS.map((op) => op.id);
+
 const PROPERTY_TYPE_OPERATOR_MAP: Record<PropertyType, OperatorID[]> = {
   enumerated: ["equals", "any", "none", "in"],
   number: ["equals", "greater_than", "less_than", "any", "none", "in"],
@@ -25,10 +27,12 @@ const PROPERTY_TYPE_OPERATOR_MAP: Record<PropertyType, OperatorID[]> = {
 export interface ProductFilterProps {
   selectedPropertyID: PropertyID | null;
   selectedOperatorID: OperatorID | null;
-  inputValue: string | string[] | null;
+  inputValue: string;
+  enumeratedSelections: string[];
   onPropertyChange(newPropertyID: PropertyID): void;
   onOperatorChange(newOperatorID: OperatorID): void;
-  onInputChange(newInput: string | string[]): void;
+  onInputChange(newInput: string): void;
+  onEnumSelection(newSelection: string[]): void;
 }
 
 export function ProductFilter(props: ProductFilterProps) {
@@ -36,9 +40,11 @@ export function ProductFilter(props: ProductFilterProps) {
     selectedPropertyID,
     selectedOperatorID,
     inputValue,
+    enumeratedSelections,
     onPropertyChange,
     onOperatorChange,
     onInputChange,
+    onEnumSelection,
   } = props;
 
   const selectedProperty = PROPERTIES.find(
@@ -47,12 +53,12 @@ export function ProductFilter(props: ProductFilterProps) {
 
   const availableOperators = selectedProperty
     ? PROPERTY_TYPE_OPERATOR_MAP[selectedProperty.type]
-    : [];
+    : ALL_OPERATORS;
+
+  const isEnumeratedProperty = selectedProperty?.type === "enumerated";
 
   // We only want to show the input when we have both selections.
   const showInput = selectedPropertyID !== null && selectedOperatorID !== null;
-
-  const isEnumeratedProperty = selectedProperty?.type === "enumerated";
 
   function handlePropertyChange(event: ChangeEvent<HTMLSelectElement>) {
     // The empty selection is disabled, so the selection can only be a property ID.
@@ -77,10 +83,10 @@ export function ProductFilter(props: ProductFilterProps) {
     <div className="product-filter">
       <select
         name="properties"
-        value={selectedPropertyID ?? undefined}
+        value={selectedPropertyID ?? ""}
         onChange={handlePropertyChange}
       >
-        <option selected disabled>
+        <option value="" disabled>
           Select a property...
         </option>
         {PROPERTIES.map((property) => (
@@ -91,10 +97,10 @@ export function ProductFilter(props: ProductFilterProps) {
       </select>
       <select
         name="operators"
-        value={selectedOperatorID ?? undefined}
+        value={selectedOperatorID ?? ""}
         onChange={handleOperatorChange}
       >
-        <option selected disabled>
+        <option value="" disabled>
           Select an operator...
         </option>
         {availableOperators.map((operator) => (
@@ -108,22 +114,22 @@ export function ProductFilter(props: ProductFilterProps) {
           {isEnumeratedProperty ? (
             <ul className="properties-listbox" role="listbox">
               {selectedProperty.values?.map((value) => {
-                const isSelected =
-                  Array.isArray(inputValue) &&
-                  inputValue.some((val) => val === value);
+                const isSelected = enumeratedSelections.some(
+                  (selection) => selection === value,
+                );
 
                 function handleItemSelection() {
-                  let newValue: string[];
+                  let newSelections: string[];
 
-                  if (!Array.isArray(inputValue)) {
-                    newValue = [value];
-                  } else if (isSelected) {
-                    newValue = inputValue.filter((val) => val !== value);
+                  if (isSelected) {
+                    newSelections = enumeratedSelections.filter(
+                      (selection) => selection !== value,
+                    );
                   } else {
-                    newValue = [...inputValue, value];
+                    newSelections = [...enumeratedSelections, value];
                   }
 
-                  onInputChange(newValue);
+                  onEnumSelection(newSelections);
                 }
 
                 return (
