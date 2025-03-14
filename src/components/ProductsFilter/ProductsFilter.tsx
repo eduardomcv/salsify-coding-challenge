@@ -132,6 +132,7 @@ export function ProductsFilter(props: ProductFilterProps) {
 
                 return (
                   <li
+                    key={value}
                     role="option"
                     className={isSelected ? "selected" : undefined}
                     onClick={handleItemSelection}
