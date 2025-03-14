@@ -16,6 +16,8 @@ const OPERATOR_TEXT_MAP = OPERATORS.reduce(
   {} as Record<OperatorID, string>,
 );
 
+const ALL_OPERATORS = OPERATORS.map((op) => op.id);
+
 const PROPERTY_TYPE_OPERATOR_MAP: Record<PropertyType, OperatorID[]> = {
   enumerated: ["equals", "any", "none", "in"],
   number: ["equals", "greater_than", "less_than", "any", "none", "in"],
@@ -51,18 +53,22 @@ export function ProductsFilter(props: ProductFilterProps) {
 
   const availableOperators = selectedProperty
     ? PROPERTY_TYPE_OPERATOR_MAP[selectedProperty.type]
-    : [];
+    : ALL_OPERATORS;
+
+  const isAvailableOperator =
+    selectedOperatorID !== null &&
+    availableOperators.some((op) => op === selectedOperatorID);
 
   // We only want to show the input when we have both selections.
-  const showInput = selectedPropertyID !== null && selectedOperatorID !== null;
+  const showInput = selectedPropertyID !== null && isAvailableOperator;
 
   const isEnumeratedProperty = selectedProperty?.type === "enumerated";
 
   function handlePropertyChange(event: ChangeEvent<HTMLSelectElement>) {
     // The empty selection is disabled, so the selection can only be a property ID.
-    const propertyID = Number(event.currentTarget.value);
+    const newPropertyID = Number(event.currentTarget.value);
 
-    onPropertyChange(propertyID);
+    onPropertyChange(newPropertyID);
   }
 
   function handleOperatorChange(event: ChangeEvent<HTMLSelectElement>) {
@@ -95,7 +101,7 @@ export function ProductsFilter(props: ProductFilterProps) {
       </select>
       <select
         name="operators"
-        value={selectedOperatorID ?? ""}
+        value={isAvailableOperator ? selectedOperatorID : ""}
         onChange={handleOperatorChange}
       >
         <option value="" disabled>
