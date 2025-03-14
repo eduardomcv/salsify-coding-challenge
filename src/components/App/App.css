@@ -1,6 +1,31 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+	margin: 0 auto;
+	padding: 2rem;
+}
+
+.container {
+	border: 1px solid grey;
+
+	table {
+		min-width: 800px;
+		text-align: left;
+		border-top: 2px solid black;
+	}
+
+	th {
+		font-weight: 400;
+		background-color: lightgray;
+	}
+
+	th,
+	td {
+		padding: .25rem;
+		border-right: 1px solid grey;
+	}
+
+	table,
+	th,
+	td {
+		border-collapse: collapse;
+	}
 }

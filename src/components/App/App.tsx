@@ -6,7 +6,7 @@ const products = window.datastore.getProducts();
 
 export function App() {
   return (
-    <>
+    <div className="container">
       <ProductFilter />
       <table>
         <thead>
@@ -29,6 +29,6 @@ export function App() {
           ))}
         </tbody>
       </table>
-    </>
+    </div>
   );
 }
