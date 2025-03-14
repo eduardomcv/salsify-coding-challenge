@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent } from "react";
 
 import { OperatorID, PropertyID, PropertyType } from "../../datastoreTypes";
 
@@ -22,10 +22,24 @@ const PROPERTY_TYPE_OPERATOR_MAP: Record<PropertyType, OperatorID[]> = {
   string: ["equals", "any", "none", "in", "contains"],
 };
 
-export function ProductFilter() {
-  const [selectedPropertyID, setSelectedPropertyID] = useState<PropertyID>();
-  const [selectedOperatorID, setSelectedOperatorID] = useState<OperatorID>();
-  const [inputValue, setInputValue] = useState<string | string[]>("");
+export interface ProductFilterProps {
+  selectedPropertyID: PropertyID | null;
+  selectedOperatorID: OperatorID | null;
+  inputValue: string | string[] | null;
+  onPropertyChange(newPropertyID: PropertyID): void;
+  onOperatorChange(newOperatorID: OperatorID): void;
+  onInputChange(newInput: string | string[]): void;
+}
+
+export function ProductFilter(props: ProductFilterProps) {
+  const {
+    selectedPropertyID,
+    selectedOperatorID,
+    inputValue,
+    onPropertyChange,
+    onOperatorChange,
+    onInputChange,
+  } = props;
 
   const selectedProperty = PROPERTIES.find(
     (property) => property.id === selectedPropertyID,
@@ -45,9 +59,7 @@ export function ProductFilter() {
     // The empty selection is disabled, so the selection can only be a property ID.
     const propertyID = Number(event.currentTarget.value);
 
-    setSelectedPropertyID(propertyID);
-    // clear input value when changing properties
-    setInputValue("");
+    onPropertyChange(propertyID);
   }
 
   function handleOperatorChange(event: ChangeEvent<HTMLSelectElement>) {
@@ -55,18 +67,18 @@ export function ProductFilter() {
     // ids as the option values below.
     const operatorID = event.currentTarget.value as OperatorID;
 
-    setSelectedOperatorID(operatorID);
+    onOperatorChange(operatorID);
   }
 
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
-    setInputValue(event.currentTarget.value);
+    onInputChange(event.currentTarget.value);
   }
 
   return (
     <div className="product-filter">
       <select
         name="properties"
-        value={selectedPropertyID}
+        value={selectedPropertyID ?? undefined}
         onChange={handlePropertyChange}
       >
         <option selected disabled>
@@ -80,7 +92,7 @@ export function ProductFilter() {
       </select>
       <select
         name="operators"
-        value={selectedOperatorID}
+        value={selectedOperatorID ?? undefined}
         onChange={handleOperatorChange}
       >
         <option selected disabled>
@@ -102,17 +114,17 @@ export function ProductFilter() {
                   inputValue.some((val) => val === value);
 
                 function handleItemSelection() {
-                  setInputValue((prev) => {
-                    if (!Array.isArray(prev)) {
-                      return [value];
-                    }
+                  let newValue: string[];
 
-                    if (isSelected) {
-                      return prev.filter((val) => val !== value);
-                    }
+                  if (!Array.isArray(inputValue)) {
+                    newValue = [value];
+                  } else if (isSelected) {
+                    newValue = inputValue.filter((val) => val !== value);
+                  } else {
+                    newValue = [...inputValue, value];
+                  }
 
-                    return [...prev, value];
-                  });
+                  onInputChange(newValue);
                 }
 
                 return (
@@ -129,7 +141,7 @@ export function ProductFilter() {
           ) : (
             <input
               type="text"
-              value={inputValue}
+              value={inputValue ?? ""}
               onChange={handleInputChange}
               placeholder="Filter value..."
             />
