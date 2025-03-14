@@ -61,8 +61,15 @@ export function ProductsFilter(props: ProductFilterProps) {
     selectedOperatorID !== null &&
     availableOperators.some((op) => op === selectedOperatorID);
 
-  // We only want to show the input when we have both selections.
-  const showInput = selectedPropertyID !== null && isAvailableOperator;
+  // We only want to show the input when we have both property and operator
+  // selections, and when the operator is available for the selected property.
+  // Also, we don't want to show the input for operators that don't require
+  // input, such as "any" or "none";
+  const showInput =
+    selectedPropertyID !== null &&
+    isAvailableOperator &&
+    selectedOperatorID !== "any" &&
+    selectedOperatorID !== "none";
 
   const isEnumeratedProperty = selectedProperty?.type === "enumerated";
 
