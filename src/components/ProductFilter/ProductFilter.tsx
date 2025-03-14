@@ -50,8 +50,7 @@ export function ProductFilter(props: ProductFilterProps) {
     : [];
 
   // We only want to show the input when we have both selections.
-  const showInput =
-    selectedPropertyID !== undefined && selectedOperatorID !== undefined;
+  const showInput = selectedPropertyID !== null && selectedOperatorID !== null;
 
   const isEnumeratedProperty = selectedProperty?.type === "enumerated";
 
