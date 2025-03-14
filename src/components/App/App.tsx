@@ -43,7 +43,7 @@ export function App() {
   }
 
   return (
-    <div className="container">
+    <div className="app-container">
       <ProductsFilter
         selectedPropertyID={selectedPropertyID}
         selectedOperatorID={selectedOperatorID}
