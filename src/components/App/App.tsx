@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { PropertyID, OperatorID } from "../../datastoreTypes";
-import { ProductFilter } from "../ProductFilter";
+import { ProductsFilter } from "../ProductsFilter";
 import { ProductsTable } from "../ProductsTable";
 
 import "./App.css";
@@ -11,36 +11,47 @@ export function App() {
     useState<PropertyID | null>(null);
   const [selectedOperatorID, setSelectedOperatorID] =
     useState<OperatorID | null>(null);
-  const [inputValue, setInputValue] = useState<string | string[]>("");
+  const [inputValue, setInputValue] = useState<string>("");
+  const [enumeratedSelections, setEnumeratedSelections] = useState<string[]>(
+    [],
+  );
 
   function handlePropertyChange(newPropertyID: PropertyID) {
     setSelectedPropertyID(newPropertyID);
-    // clear input when changing properties
+    // reset inputs when changing properties
     setInputValue("");
+    setEnumeratedSelections([]);
   }
 
   function handleOperatorChange(newOperatorID: OperatorID) {
     setSelectedOperatorID(newOperatorID);
   }
 
-  function handleInputChange(newInput: string | string[]) {
+  function handleInputChange(newInput: string) {
     setInputValue(newInput);
+  }
+
+  function handleEnumSelection(newSelections: string[]) {
+    setEnumeratedSelections(newSelections);
   }
 
   return (
     <div className="container">
-      <ProductFilter
+      <ProductsFilter
         selectedPropertyID={selectedPropertyID}
         selectedOperatorID={selectedOperatorID}
         inputValue={inputValue}
+        enumeratedSelections={enumeratedSelections}
         onPropertyChange={handlePropertyChange}
         onOperatorChange={handleOperatorChange}
         onInputChange={handleInputChange}
+        onEnumSelection={handleEnumSelection}
       />
       <ProductsTable
         selectedPropertyID={selectedPropertyID}
         selectedOperatorID={selectedOperatorID}
         inputValue={inputValue}
+        enumeratedSelections={enumeratedSelections}
       />
     </div>
   );

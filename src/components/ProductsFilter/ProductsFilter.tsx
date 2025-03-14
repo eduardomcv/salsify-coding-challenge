@@ -2,7 +2,7 @@ import { ChangeEvent } from "react";
 
 import { OperatorID, PropertyID, PropertyType } from "../../datastoreTypes";
 
-import "./ProductFilter.css";
+import "./ProductsFilter.css";
 
 const PROPERTIES = window.datastore.getProperties();
 const OPERATORS = window.datastore.getOperators();
@@ -30,6 +30,7 @@ export interface ProductFilterProps {
   onPropertyChange(newPropertyID: PropertyID): void;
   onOperatorChange(newOperatorID: OperatorID): void;
   onInputChange(newInput: string | string[]): void;
+  onEnumSelection(newInput: string | string[]): void;
 }
 
 export function ProductsFilter(props: ProductFilterProps) {
@@ -41,6 +42,7 @@ export function ProductsFilter(props: ProductFilterProps) {
     onPropertyChange,
     onOperatorChange,
     onInputChange,
+    onEnumSelection,
   } = props;
 
   const selectedProperty = PROPERTIES.find(
@@ -79,10 +81,10 @@ export function ProductsFilter(props: ProductFilterProps) {
     <div className="product-filter">
       <select
         name="properties"
-        value={selectedPropertyID ?? undefined}
+        value={selectedPropertyID ?? ""}
         onChange={handlePropertyChange}
       >
-        <option selected disabled>
+        <option value="" disabled>
           Select a property...
         </option>
         {PROPERTIES.map((property) => (
@@ -93,10 +95,10 @@ export function ProductsFilter(props: ProductFilterProps) {
       </select>
       <select
         name="operators"
-        value={selectedOperatorID ?? undefined}
+        value={selectedOperatorID ?? ""}
         onChange={handleOperatorChange}
       >
-        <option selected disabled>
+        <option value="" disabled>
           Select an operator...
         </option>
         {availableOperators.map((operator) => (
@@ -110,22 +112,22 @@ export function ProductsFilter(props: ProductFilterProps) {
           {isEnumeratedProperty ? (
             <ul className="properties-listbox" role="listbox">
               {selectedProperty.values?.map((value) => {
-                const isSelected =
-                  Array.isArray(inputValue) &&
-                  inputValue.some((val) => val === value);
+                const isSelected = enumeratedSelections.some(
+                  (val) => val === value,
+                );
 
                 function handleItemSelection() {
-                  let newValue: string[];
+                  let newSelections: string[];
 
-                  if (!Array.isArray(inputValue)) {
-                    newValue = [value];
-                  } else if (isSelected) {
-                    newValue = inputValue.filter((val) => val !== value);
+                  if (isSelected) {
+                    newSelections = enumeratedSelections.filter(
+                      (val) => val !== value,
+                    );
                   } else {
-                    newValue = [...inputValue, value];
+                    newSelections = [...enumeratedSelections, value];
                   }
 
-                  onInputChange(newValue);
+                  onEnumSelection(newSelections);
                 }
 
                 return (
