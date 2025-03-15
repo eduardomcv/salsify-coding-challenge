@@ -295,7 +295,7 @@ describe("App component", () => {
     }
   });
 
-  test("should apply the 'in' operator correctly", async () => {
+  test("should apply the 'in' operator correctly for enumerable properties", async () => {
     render(<App />);
 
     const propertySelector = page.getByRole("combobox", {
@@ -323,6 +323,34 @@ describe("App component", () => {
     expect(page.getByRole("row").elements().length).toBe(5);
 
     const expectedProducts = ["Headphones", "Cell Phone", "Keyboard", "Cup"];
+
+    for (const product of expectedProducts) {
+      await expect
+        .element(page.getByRole("cell", { name: product }))
+        .toBeInTheDocument();
+    }
+  });
+
+  test("should apply the 'in' operator correctly for non-enumerable properties", async () => {
+    render(<App />);
+
+    const propertySelector = page.getByRole("combobox", {
+      name: "Properties",
+    });
+
+    const operatorSelector = page.getByRole("combobox", {
+      name: "Operators",
+    });
+
+    await propertySelector.selectOptions("color");
+    await operatorSelector.selectOptions("Is any of");
+
+    const inputElement = page.getByPlaceholder("Filter value...");
+    await inputElement.fill("grey, brown");
+
+    expect(page.getByRole("row").elements().length).toBe(3);
+
+    const expectedProducts = ["Keyboard", "Hammer"];
 
     for (const product of expectedProducts) {
       await expect
