@@ -2,14 +2,15 @@
 
 ## Introduction
 
-This is a UI development coding exercise for Salsify. It consists in a table of products, which can be filtered by the
-user.
+This is a UI development coding exercise for [Salsify](https://www.salsify.com/). It consists in a table of products, which can be filtered by the user.
 The user can use a combination of product properties and operators to filter the results. The product data store was
 provided by Salsify and is located in `public/datastore.js`.
 
 There were no requirements on tech stack/frameworks, so I opted for using [React](https://react.dev/) + [Typescript](https://www.typescriptlang.org/),
 which is the stack I'm most comfortable using. The project was bootstrapped using [Vite](https://vite.dev/) and uses
 [Vitest Browser](https://vitest.dev/guide/browser/) + [Playwright](https://playwright.dev/) for testing.
+
+You can find the original exercise repository here: https://github.com/salsify/condition-editor-coding-exercise
 
 ## Installation
 
