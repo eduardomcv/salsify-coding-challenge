@@ -97,6 +97,7 @@ export function ProductsFilter(props: ProductFilterProps) {
       <div className="products-filter-inputs">
         <select
           name="properties"
+          aria-label="Properties"
           value={selectedPropertyID ?? ""}
           onChange={handlePropertyChange}
         >
@@ -111,6 +112,7 @@ export function ProductsFilter(props: ProductFilterProps) {
         </select>
         <select
           name="operators"
+          aria-label="Operators"
           value={isAvailableOperator ? selectedOperatorID : ""}
           onChange={handleOperatorChange}
         >
